@@ -1,9 +1,8 @@
 package com.noah.beans;
 
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.Profile;
 
 //@Configuration should be used together with @Bean
 //Class with @Configuration means it is a configuration class
@@ -40,6 +39,20 @@ public class BeanFactory {
 	public Bean_D createBeanD_2(){
 		return new Bean_D("second bean D");
 	}
+	
+	@Bean
+	@Profile("Dev")
+	public Bean_Profile createBeanProfileDev(){
+		return new Bean_Profile("Dev");
+	}
+	
+	@Bean
+	@Profile("Prd")
+	public Bean_Profile createBeanProfilePrd(){
+		return new Bean_Profile("Prd");
+	}
+	
+	
 	
 	
 }
