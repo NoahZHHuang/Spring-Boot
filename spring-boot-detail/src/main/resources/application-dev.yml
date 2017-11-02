@@ -2,6 +2,7 @@ logging:
   file: C:/logs/dev/spring-boot-detail.log
 
 db:
-  url: devUrl
-  username: devUsername
-  password: devPassword
+  connection:
+    url: jdbc:postgresql://127.0.0.1:5432/SpringBootDB
+    username: noah
+    password: 123456
