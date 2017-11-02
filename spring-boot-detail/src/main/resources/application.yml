@@ -1,0 +1,29 @@
+# public config item should be specified here
+
+# Spring related config
+spring:
+  application:
+    name: spring-boot-detail
+
+logging:
+  level:
+    org:
+      springframework: INFO
+      hibernate: ERROR
+    com:
+      noah: INFO
+# NOTICE: "path" and "file" are not compatible, we can choose only one, if set both, "file" will win.
+#         If we set path, the default log file name will be "spring.log"
+#  path: C:/logs
+  file: C:/logs/spring-boot-detail.log
+  
+
+server:
+  contextPath: /root
+  port: 8888
+
+# Non-Spring related config
+db:
+  url: ### Here is just a placeholder. Will override In application-{profile}.yml  ###
+  username: ### Here is just a placeholder. Will override In application-{profile}.yml  ###
+  password: ### Here is just a placeholder. Will override In application-{profile}.yml  ###

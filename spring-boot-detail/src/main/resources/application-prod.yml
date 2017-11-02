@@ -1,0 +1,7 @@
+logging:
+  file: C:/logs/prod/spring-boot-detail.log
+
+db:
+  url: prodUrl
+  username: prodUsername
+  password: prodPassword
