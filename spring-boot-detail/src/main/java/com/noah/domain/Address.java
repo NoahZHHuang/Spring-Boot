@@ -2,6 +2,8 @@ package com.noah.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity(name="ADDRESS")
@@ -10,6 +12,8 @@ public class Address {
 	
 	@Id
 	@Column(name="addr_id")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)  
+	//ids for this class must be manually assigned before calling save(): com.noah.domain.Address
 	private Integer addrId;
 	
 	@Column(name="street")
