@@ -5,7 +5,10 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.noah.config.DynamicDataSourceHolder;
 import com.noah.dao.AddressRepository;
 import com.noah.dao.StudentRepository;
 import com.noah.domain.Address;
@@ -24,6 +27,18 @@ public class StudentService {
 	public List<Student> getallStudents() {
 		return (List<Student>) studentRepository.findAll();
 	}
+	
+	@Transactional(propagation=Propagation.REQUIRES_NEW)
+	public List<Student> getAllStudentsInSlaveDB() {
+		DynamicDataSourceHolder.setDataSource("slave");
+		return (List<Student>) studentRepository.findAll();
+	}
+	
+	@Transactional(propagation=Propagation.REQUIRES_NEW)
+	public List<Student> getAllStudentsInMasterDB() {
+		DynamicDataSourceHolder.setDataSource("master");
+		return (List<Student>) studentRepository.findAll();
+	}
 
 	public Student getStudentById(Integer id) {
 		return studentRepository.findOne(id);
@@ -32,7 +47,7 @@ public class StudentService {
 	public List<Student> getStudentByIds(List<Integer> ids) {
 		return (List<Student>) studentRepository.findAll(ids);
 	}
-
+ 
 	public List<Student> getStudentsByName(String name) {
 		return studentRepository.findByName(name);
 	}

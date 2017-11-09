@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.noah.config.DynamicDataSourceHolder;
 import com.noah.domain.Address;
 import com.noah.domain.CountOfStudentByAddress;
 import com.noah.domain.Student;
@@ -24,13 +25,33 @@ public class StudentController {
 	@Autowired
 	private StudentService studentService;
 	
+	
 	@RequestMapping(value = "/all", method=RequestMethod.GET)
 	private List<Student> getAllStudents(){
 		return studentService.getallStudents();
 	}
 	
+	@RequestMapping(value = "/all/allDB", method=RequestMethod.GET)
+	private List<Student> getAllStudentsInAllDB(){
+		
+		List<Student> studentsInSlave = studentService.getAllStudentsInSlaveDB();
+		List<Student> studentsInMaster = studentService.getAllStudentsInMasterDB();
+		studentsInMaster.addAll(studentsInSlave);
+		return studentsInMaster;
+	}
+	
 	@RequestMapping(value = "/id/{id}", method=RequestMethod.GET)
 	private Student getStudentById(@PathVariable("id") Integer id){
+		return studentService.getStudentById(id);
+	}
+	
+	@RequestMapping(value = "/{db}/id/{id}", method=RequestMethod.GET)
+	private Student getStudentByIdInSpecificDB(@PathVariable("db") String db, @PathVariable("id") Integer id){
+		if(db.equalsIgnoreCase("slave")){
+			DynamicDataSourceHolder.setDataSource("slave");
+		}else{
+			DynamicDataSourceHolder.setDataSource("master");
+		}
 		return studentService.getStudentById(id);
 	}
 	

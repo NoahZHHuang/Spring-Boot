@@ -26,18 +26,19 @@ server:
 db:
   connection:
     driver: org.postgresql.Driver
-    url: ### Here is just a placeholder. Will override In application-{profile}.yml  ###
+    urlmaster: ### Here is just a placeholder. Will override In application-{profile}.yml  ###
+    urlslave: ### Here is just a placeholder. Will override In application-{profile}.yml 
     username: ### Here is just a placeholder. Will override In application-{profile}.yml  ###
     password: ### Here is just a placeholder. Will override In application-{profile}.yml  ###
     poolsize:
       min: 1
       max: 10
       initial: 5
-    maxidletime: 120
+    maxidletime: 30
     retry:
       attemps: 60
       delay: 1000
-
+        
 hibernate:
   dialect: org.hibernate.dialect.PostgreSQLDialect
   show_sql: true

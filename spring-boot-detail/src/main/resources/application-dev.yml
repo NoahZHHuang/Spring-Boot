@@ -3,6 +3,7 @@ logging:
 
 db:
   connection:
-    url: jdbc:postgresql://127.0.0.1:5432/SpringBootDB
+    urlmaster: jdbc:postgresql://127.0.0.1:5432/SpringBootDB
+    urlslave: jdbc:postgresql://127.0.0.1:5432/SlaveSpringBootDB
     username: noah
     password: 123456

@@ -3,6 +3,7 @@ logging:
 
 db:
   connection:
-    url: prodUrl
+    urlmaster: prodUrlMaster
+    urlslave: prodUrlSlave
     username: prodUsername
     password: prodPassword
