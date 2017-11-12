@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,11 +22,12 @@ import com.noah.service.StudentService;
 
 @RestController
 @RequestMapping("/students")
+@Transactional(propagation=Propagation.REQUIRES_NEW)
 public class StudentController {
 
 	@Autowired
 	private StudentService studentService;
-	
+		
 	
 	@RequestMapping(value = "/all", method=RequestMethod.GET)
 	private List<Student> getAllStudents(){
@@ -34,8 +37,11 @@ public class StudentController {
 	@RequestMapping(value = "/all/allDB", method=RequestMethod.GET)
 	private List<Student> getAllStudentsInAllDB(){
 		
-		List<Student> studentsInSlave = studentService.getAllStudentsInSlaveDB();
-		List<Student> studentsInMaster = studentService.getAllStudentsInMasterDB();
+		DynamicDataSourceHolder.setDataSource("slave");
+		List<Student> studentsInSlave =  studentService.getallStudents();
+		DynamicDataSourceHolder.setDataSource("master");
+		List<Student> studentsInMaster =  studentService.getallStudents();
+
 		studentsInMaster.addAll(studentsInSlave);
 		return studentsInMaster;
 	}

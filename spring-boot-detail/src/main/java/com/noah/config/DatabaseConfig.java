@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 import org.apache.commons.dbcp.BasicDataSource;
@@ -14,7 +13,6 @@ import org.postgresql.ds.PGSimpleDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,7 +26,7 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 @Configuration
 @EnableTransactionManagement
 public class DatabaseConfig {
-	
+		
 	private static final Logger LOGGER = LoggerFactory.getLogger(DatabaseConfig.class);
 	
 	@Value("${db.connection.driver}")
@@ -74,10 +72,10 @@ public class DatabaseConfig {
 	@Bean
 	public DataSource buildDynamicDataSource() throws PropertyVetoException{
 		DynamicDataSource dds = new DynamicDataSource();
-		//DataSource master = buildMasterDataSource();
-		//DataSource slave = buildSlaveDataSource();
-		DataSource master = buildMasterDataSourceWithoutPooling();
-		DataSource slave = buildSlaveDataSourceWithoutPooling();
+		//DataSource master = buildMasterDataSourceWithoutPooling();
+		//DataSource slave = buildSlaveDataSourceWithoutPooling();
+		DataSource master = buildMasterDataSource();
+		DataSource slave = buildSlaveDataSource();
 		Map<Object, Object> targetDataSources = new HashMap<>();
 		targetDataSources.put("master", master);
 		targetDataSources.put("slave", slave);
@@ -120,17 +118,7 @@ public class DatabaseConfig {
 		return bds;
 	}
 	
-	private DataSource buildSlaveDataSourceWithoutPooling(){
-		//jdbc:postgresql://127.0.0.1:5432/SlaveSpringBootDB
-		PGSimpleDataSource ds = new PGSimpleDataSource();
-        ds.setServerName("127.0.0.1");
-        ds.setDatabaseName("SlaveSpringBootDB");
-        ds.setPortNumber(Integer.parseInt("5432"));
-        ds.setUser("noah");
-        ds.setPassword("123456");
-        return ds;
-	}
-	
+
 	private DataSource buildMasterDataSourceWithoutPooling(){
 		//jdbc:postgresql://127.0.0.1:5432/SlaveSpringBootDB
 		PGSimpleDataSource ds = new PGSimpleDataSource();
@@ -142,10 +130,19 @@ public class DatabaseConfig {
         return ds;
 	}
 	
+	private DataSource buildSlaveDataSourceWithoutPooling(){
+		//jdbc:postgresql://127.0.0.1:5432/SlaveSpringBootDB
+		PGSimpleDataSource ds = new PGSimpleDataSource();
+        ds.setServerName("127.0.0.1");
+        ds.setDatabaseName("SlaveSpringBootDB");
+        ds.setPortNumber(Integer.parseInt("5432"));
+        ds.setUser("noah");
+        ds.setPassword("123456");
+        return ds;
+	}
+
 	
 	@Bean
-	//LocalContainerEntityManagerFactoryBean is an implementation of EntityManagerFactory
-	//can control every detail of all entities 
 	public LocalContainerEntityManagerFactoryBean entityManagerFactory() throws PropertyVetoException{
 		LocalContainerEntityManagerFactoryBean entityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
 		entityManagerFactoryBean.setDataSource(buildDynamicDataSource());

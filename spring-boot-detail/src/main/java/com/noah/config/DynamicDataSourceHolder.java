@@ -3,13 +3,13 @@ package com.noah.config;
 public class DynamicDataSourceHolder {
 	
 	// put it into ThreadLocal, make it thread safe in multiple threading env
-	private static final ThreadLocal<String> THREAD_DATA_SOURCE = new ThreadLocal<>();
+	private static final ThreadLocal<Object> THREAD_DATA_SOURCE = new ThreadLocal<>();
 	
-	public static void setDataSource(String dataSource){
+	public static void setDataSource(Object dataSource){
 		THREAD_DATA_SOURCE.set(dataSource);
 	}
 	
-	public static String getDataSource(){
+	public static Object getDataSource(){
 		return THREAD_DATA_SOURCE.get();
 	}
 	

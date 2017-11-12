@@ -3,6 +3,8 @@ package com.noah.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -23,23 +25,11 @@ public class StudentService {
 	
 	@Autowired
 	private AddressRepository addressRepository;
-
+	
 	public List<Student> getallStudents() {
 		return (List<Student>) studentRepository.findAll();
 	}
 	
-	@Transactional(propagation=Propagation.REQUIRES_NEW)
-	public List<Student> getAllStudentsInSlaveDB() {
-		DynamicDataSourceHolder.setDataSource("slave");
-		return (List<Student>) studentRepository.findAll();
-	}
-	
-	@Transactional(propagation=Propagation.REQUIRES_NEW)
-	public List<Student> getAllStudentsInMasterDB() {
-		DynamicDataSourceHolder.setDataSource("master");
-		return (List<Student>) studentRepository.findAll();
-	}
-
 	public Student getStudentById(Integer id) {
 		return studentRepository.findOne(id);
 	}
