@@ -4,8 +4,6 @@ import java.util.List;
 
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,7 +20,6 @@ import com.noah.service.StudentService;
 
 @RestController
 @RequestMapping("/students")
-@Transactional(propagation=Propagation.REQUIRES_NEW)
 public class StudentController {
 
 	@Autowired
@@ -31,16 +28,39 @@ public class StudentController {
 	
 	@RequestMapping(value = "/all", method=RequestMethod.GET)
 	private List<Student> getAllStudents(){
-		return studentService.getallStudents();
+		return studentService.getAllStudentsDirectly();
 	}
 	
 	@RequestMapping(value = "/all/allDB", method=RequestMethod.GET)
 	private List<Student> getAllStudentsInAllDB(){
 		
+		//We expect below code will get the data from both Slave and Master, but Actually it get data from Slave DB for twice 
+		//Because the "@Transactional(propagation=Propagation.REQUIRES_NEW)" is put in StudentService 
+		//And the same StudentService instance is called twice in the StudentController
+		//As we know, when we use @Transactional in a Class (Class level or Method level), Spring will make it as a Proxy Class
+		//And what's more, a Class can be proxied only once, or we can say the AOP of @Transactinal will only take effect for once
+		//It means the first time we call the studentService.getAllStudentsDirectly(), it require a new connection
+		//The second time, it will NOT require a new connection, but use the old one, so we get the Slave DB data twice
+		/*
 		DynamicDataSourceHolder.setDataSource("slave");
-		List<Student> studentsInSlave =  studentService.getallStudents();
+		List<Student> studentsInSlave =  studentService.getAllStudentsDirectly();
 		DynamicDataSourceHolder.setDataSource("master");
-		List<Student> studentsInMaster =  studentService.getallStudents();
+		List<Student> studentsInMaster =  studentService.getAllStudentsDirectly();
+		*/
+		
+		//There is a shortcut to bypass this restriction
+		//We set up one more Class StudentServiceHelper to query all Student(the same functionality of getallStudentsDirectly)
+		//And in the StudentService we just call StudentServiceHelper
+		//We put @Transactional(propagation=Propagation.REQUIRES_NEW) in StudentServiceHelper and @Transactional in StudentService
+		//Then it can avoid the situation that the StudentService wanna be proxied twice
+		//Namely, the AOP of @Transaction take effect in StudentService, also take effect in StudentServiceHelper
+		//So every time we call studentService.getAllStudentsFromHelper, @Transactional(propagation=Propagation.REQUIRES_NEW) help us get a new connection
+		//Nested @Transactional is really a tricky thing in Spring, AOP is hard to debug sometimes.
+		DynamicDataSourceHolder.setDataSource("slave");
+		List<Student> studentsInSlave =  studentService.getAllStudentsFromHelper();
+		DynamicDataSourceHolder.setDataSource("master");
+		List<Student> studentsInMaster =  studentService.getAllStudentsFromHelper();
+		
 
 		studentsInMaster.addAll(studentsInSlave);
 		return studentsInMaster;

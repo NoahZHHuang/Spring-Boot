@@ -26,8 +26,18 @@ public class StudentService {
 	@Autowired
 	private AddressRepository addressRepository;
 	
-	public List<Student> getallStudents() {
+	@Autowired
+	private StudentServiceHelper studentServiceHelper;
+	
+	@Transactional(propagation=Propagation.REQUIRES_NEW)
+	public List<Student> getAllStudentsDirectly() {
 		return (List<Student>) studentRepository.findAll();
+	}
+	
+	//This @Transactional can not removed
+	@Transactional
+	public List<Student> getAllStudentsFromHelper() {
+		return (List<Student>) studentServiceHelper.getAllStudents();
 	}
 	
 	public Student getStudentById(Integer id) {
