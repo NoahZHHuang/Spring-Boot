@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.noah.config.DynamicDataSourceHolder;
+import com.noah.config.db.DynamicDataSourceHolder;
 import com.noah.dao.AddressRepository;
 import com.noah.dao.StudentRepository;
 import com.noah.domain.Address;

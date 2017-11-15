@@ -1,4 +1,4 @@
-package com.noah.config;
+package com.noah.config.db;
 
 import java.beans.PropertyVetoException;
 import java.util.HashMap;

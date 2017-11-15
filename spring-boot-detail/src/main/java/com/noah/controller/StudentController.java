@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.noah.config.DynamicDataSourceHolder;
+import com.noah.config.db.DynamicDataSourceHolder;
 import com.noah.domain.Address;
 import com.noah.domain.CountOfStudentByAddress;
 import com.noah.domain.Student;

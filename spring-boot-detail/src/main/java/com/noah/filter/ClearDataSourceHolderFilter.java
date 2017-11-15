@@ -10,7 +10,7 @@ import javax.servlet.annotation.WebFilter;
 
 import org.springframework.web.filter.GenericFilterBean;
 
-import com.noah.config.DynamicDataSourceHolder;
+import com.noah.config.db.DynamicDataSourceHolder;
 
 @WebFilter
 public class ClearDataSourceHolderFilter extends GenericFilterBean{

@@ -1,4 +1,4 @@
-package com.noah.config;
+package com.noah.config.db;
 
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 
